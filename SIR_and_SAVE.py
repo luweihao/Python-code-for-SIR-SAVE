@@ -161,8 +161,15 @@ def scatter_plot(x, y, x_name, y_name, title, file_name, dpi=200):
     plt.rcParams['figure.dpi'] = origin_dpi
 
 
+def projection_matrix_F_norm(beta, beta_hat):
+    P = beta @ np.linalg.inv(beta.T @ beta) @ beta.T
+    P_hat = beta_hat @ np.linalg.inv(beta_hat.T @ beta_hat) @ beta_hat.T
+
+    return np.linalg.norm(P-P_hat)
+
+
 # # example 1 : y = x_1 + x_2 + x_3 + x_4 + 0x_5 + epsilon
-# n = 100
+# n = 500
 # H = 5
 # K = 1
 # beta = np.array([1, 1, 1, 1, 0])
@@ -172,75 +179,119 @@ def scatter_plot(x, y, x_name, y_name, title, file_name, dpi=200):
 # y = np.matmul(X, beta) + epsilon
 #
 # print('SIR Method 1, beta_hat : ')
-# print(sir_1(X, y, H=H, K=K))
+# sir_1_result = sir_1(X, y, H=H, K=K)
+# print(sir_1_result)
+# print('SIR Method 1, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta[:, np.newaxis], sir_1_result))
 #
 # print('SIR Method 2, beta_hat : ')
-# print(sir_2(X, y, H=H, K=K))
+# sir_2_result = sir_2(X, y, H=H, K=K)
+# print(sir_2_result)
+# print('SIR Method 2, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta[:, np.newaxis], sir_2_result))
 #
 # print('SAVE, beta_hat : ')
-# print(save(X, y, H=H, K=K))
+# save_result = save(X, y, H=H, K=K)
+# print(save_result)
+# print('SAVE, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta[:, np.newaxis], save_result))
 
 
 # # example 2 : y = x_1 * ( x_1 + x_2 + 1 ) + sigma * epsilon
-# n = 400
-# H = 5
+# n = 10000
+# H = 20
 # K = 2
 # p = 10  # number of variables
 # sigma = 0.5
 # beta1 = np.concatenate([[1], np.zeros(p-1)])
 # beta2 = np.concatenate([[0, 1], np.zeros(p-2)])
+# beta = np.c_[beta1[:, np.newaxis], beta2[:, np.newaxis]]
 # print('beta1 : ', beta1)
 # print('beta2 : ', beta2)
 # X = np.random.normal(0, 1, [n, p])
 # epsilon = np.random.normal(0, sigma, n)
 # y = np.matmul(X, beta1) * (np.matmul(X, beta1) + np.matmul(X, beta2) + 1.) + epsilon
 #
-# print('Method 1, beta_hat : ')
-# print(sir_1(X, y, H=H, K=K))
+# print('SIR Method 1, beta_hat : ')
+# sir_1_result = sir_1(X, y, H=H, K=K)
+# print(sir_1_result)
+# print('SIR Method 1, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta, sir_1_result))
 #
-# print('Method 2, beta_hat : ')
-# print(sir_2(X, y, H=H, K=K))
+# print('SIR Method 2, beta_hat : ')
+# sir_2_result = sir_2(X, y, H=H, K=K)
+# print(sir_2_result)
+# print('SIR Method 2, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta, sir_2_result))
+#
+# print('SAVE, beta_hat : ')
+# save_result = save(X, y, H=H, K=K)
+# print(save_result)
+# print('SAVE, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta, save_result))
 
 
 # # example 3 : y = x_1 / ( 0.5 + ( x_2 + 1.5 )^2 ) + sigma * epsilon
-# n = 400
-# H = 5
+# n = 10000
+# H = 20
 # K = 2
 # p = 10  # number of variables
 # sigma = 0.5
 # beta1 = np.concatenate([[1], np.zeros(p-1)])
 # beta2 = np.concatenate([[0, 1], np.zeros(p-2)])
+# beta = np.c_[beta1[:, np.newaxis], beta2[:, np.newaxis]]
 # print('beta1 : ', beta1)
 # print('beta2 : ', beta2)
 # X = np.random.normal(0, 1, [n, p])
 # epsilon = np.random.normal(0, sigma, n)
 # y = np.matmul(X, beta1) / (0.5 + np.power(np.matmul(X, beta2) + 1.5, 2)) + epsilon
 #
-# print('Method 1, beta_hat : ')
-# print(sir_1(X, y, H=H, K=K))
+# print('SIR Method 1, beta_hat : ')
+# sir_1_result = sir_1(X, y, H=H, K=K)
+# print(sir_1_result)
+# print('SIR Method 1, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta, sir_1_result))
 #
-# print('Method 2, beta_hat : ')
-# print(sir_2(X, y, H=H, K=K))
+# print('SIR Method 2, beta_hat : ')
+# sir_2_result = sir_2(X, y, H=H, K=K)
+# print(sir_2_result)
+# print('SIR Method 2, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta, sir_2_result))
+#
+# print('SAVE, beta_hat : ')
+# save_result = save(X, y, H=H, K=K)
+# print(save_result)
+# print('SAVE, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta, save_result))
 
 
 # example 4 : y = x_1^2 + epsilon
-n = 400
-H = 5
-K = 1
-v = 0.5
-beta = np.array([1, 0])
-print('beta : ', beta)
-X = np.zeros([n, 2])
-X[:, 0] = np.random.normal(0, 1, n)
-X[:, 1] = X[:, 0] * X[:, 0] + np.random.normal(0, v, n)
-epsilon = np.random.normal(0, 1, n)
-y = X[:, 0] * X[:, 0] + epsilon
-
-print('Method 1, beta_hat : ')
-print(sir_1(X, y, H=H, K=K))
-
-print('Method 2, beta_hat : ')
-print(sir_2(X, y, H=H, K=K))
-
-print('SAVE, beta_hat : ')
-print(save(X, y, H=H, K=K))
+# n = 1000
+# H = 5
+# K = 1
+# v = 10
+# beta = np.array([1, 0])
+# print('beta : ', beta)
+# X = np.zeros([n, 2])
+# X[:, 0] = np.random.normal(0, 1, n)
+# X[:, 1] = X[:, 0] * X[:, 0] + np.random.normal(0, v, n)
+# epsilon = np.random.normal(0, 0.5, n)
+# y = X[:, 0] * X[:, 0] + epsilon
+#
+# print('SIR Method 1, beta_hat : ')
+# sir_1_result = sir_1(X, y, H=H, K=K)
+# print(sir_1_result)
+# print('SIR Method 1, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta[:, np.newaxis], sir_1_result))
+#
+# print('SIR Method 2, beta_hat : ')
+# sir_2_result = sir_2(X, y, H=H, K=K)
+# print(sir_2_result)
+# print('SIR Method 2, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta[:, np.newaxis], sir_2_result))
+#
+# print('SAVE, beta_hat : ')
+# save_result = save(X, y, H=H, K=K)
+# print(save_result)
+# print('SAVE, projection matrix F norm : ')
+# print(projection_matrix_F_norm(beta[:, np.newaxis], save_result))
